@@ -23,6 +23,35 @@ namespace LeidtogiDesktop
         public MainWindow()
         {
             InitializeComponent();
+            this.Background = new SolidColorBrush(Colors.Orange);
+
+            Button myButton = new Button();
+            myButton.Width = 100;
+            myButton.Height = 30;
+            myButton.Content = "Тест"; 
+            myButton.Background = new SolidColorBrush(Colors.Gray);
+
+            stackPanelForAddButton.Children.Add(myButton);
+
+            // Image myImage = new Image(); 
+            // myImage.Source = new BitmapImage(new Uri("src/img/favicon.ico", UriKind.Relative));
+
+            // stackPanelForAddImage.Children.Add(myImage);
+
+        }
+       
+    }
+
+    public class Phone
+    {
+        public string Name { get; set; }
+        public int Price { get; set; }
+        
+        public override string ToString()
+        {
+            return $"Смарт {this.Name} цена: {this.Price}";
         }
     }
+
+
 }
