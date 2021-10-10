@@ -11,11 +11,11 @@
         Title="Leidtogi" Height="450" Width="600">
 
         
-    <Grid ShowGridLines="False">
+    <Grid ShowGridLines="True">
         <!-- Icon="pack://application:,,,/src/img/favicon.ico" -->
 
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
+            <RowDefinition  Height="50" />
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
@@ -25,9 +25,21 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         
-        <StackPanel Grid.Column="2" Grid.Row="0" x:Name="stackPanelForAddButton" Orientation="Vertical" HorizontalAlignment="Right" Margin="5" />
+        <StackPanel 
+            Grid.Column="2" 
+            Grid.Row="0" 
+            x:Name="stackPanelForAddButton" 
+            Orientation="Vertical" 
+            HorizontalAlignment="Right" 
+            Margin="5" />
 
-        <StackPanel Grid.Column="1" Grid.Row="1" x:Name="stackPanelForAddImage" Orientation="Vertical" HorizontalAlignment="Right" Margin="5" />
+        <StackPanel 
+            Grid.Column="1" 
+            Grid.Row="1" 
+            x:Name="stackPanelForAddImage" 
+            Orientation="Vertical" 
+            HorizontalAlignment="Right" 
+            Margin="5" />
 
         <!-- <Canvas Background="Orange">
             

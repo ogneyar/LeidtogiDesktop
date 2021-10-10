@@ -1,7 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace LeidtogiDesktop
 {
@@ -30,6 +35,7 @@ namespace LeidtogiDesktop
             myButton.Height = 30;
             myButton.Content = "Тест"; 
             myButton.Background = new SolidColorBrush(Colors.Gray);
+            myButton.Click += ClickButtonToRequest;
 
             stackPanelForAddButton.Children.Add(myButton);
 
@@ -39,6 +45,95 @@ namespace LeidtogiDesktop
             // stackPanelForAddImage.Children.Add(myImage);
 
         }
+        
+        private async void ClickButtonToRequest(object sender, RoutedEventArgs e)
+        {
+            string token;
+            try {
+                WebRequest request = WebRequest.Create("https://api.leidtogi.site/api/user/login");
+                // WebRequest request = WebRequest.Create("http://localhost:5000/api/user/login");
+
+                request.Method = "POST"; // для отправки используется метод Post
+
+                // request.Headers.Add("Host: api.leidtogi.site");
+                // request.Headers.Add("Origin: leidtogi.site");
+                // подключение cookies.
+                // request.Credentials = CredentialCache.DefaultCredentials;
+                
+                // данные для отправки
+                string data = "{\"email\":\"ya13th@mail.ru\",\"password\":\"1111\"}";
+                // преобразуем данные в массив байтов
+                byte[] byteArray = Encoding.UTF8.GetBytes(data);
+                // устанавливаем тип содержимого - параметр ContentType
+                request.ContentType = "application/json";
+                // Устанавливаем заголовок Content-Length запроса - свойство ContentLength
+                request.ContentLength = byteArray.Length;
+                        
+                // записываем данные в поток запроса
+                using (Stream dataStream = request.GetRequestStream())
+                {
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+                }
+                // считываем данные из ответа сервера
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string tokenJSON = reader.ReadToEnd();
+                            // MessageBox.Show(tokenJSON);
+
+                            // достаём сам токен из json
+                            // string searchText = "{\"token\":\"";
+                            // int indexOfChar = tokenJSON.IndexOf(searchText);
+                            // int start = indexOfChar + searchText.Length;
+                            // token = tokenJSON.Substring(start, tokenJSON.Length - start - 2);
+
+                            Token objectToken = JsonSerializer.Deserialize<Token>(tokenJSON);
+
+                            token = objectToken.token;
+
+                            // MessageBox.Show(token);
+
+                        }
+                    }
+                }
+
+
+                request = WebRequest.Create("https://api.leidtogi.site/api/user/info");
+                request.Headers.Add("Authorization: Bearer " + token);
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string userJSON = reader.ReadToEnd();
+                            // MessageBox.Show(userJSON);
+
+                            var options = new JsonSerializerOptions
+                            {
+                                IgnoreNullValues = true
+                            };
+                            
+                            User objectUser = JsonSerializer.Deserialize<User>(userJSON, options);
+
+                            if (objectUser.role == null) MessageBox.Show("Нет такого параметра...");
+                            else MessageBox.Show(objectUser.role);
+
+                        }
+                    }
+                }
+
+                // MessageBox.Show("Запрос выполнен...");
+
+            
+            }catch {
+                MessageBox.Show("Исключение!");
+            }
+        }
+
        
     }
 
@@ -53,5 +148,34 @@ namespace LeidtogiDesktop
         }
     }
 
+    class Token { public string token { get; set; } }
+
+
+    class User { 
+        public int id { get; set; } 
+        public string surname { get; set; } 
+        public string name { get; set; } 
+        public string patronymic { get; set; } 
+        public long phone { get; set; } 
+        public string email { get; set; } 
+        public string address { get; set; } 
+        public string password { get; set; } 
+        public string role { get; set; } 
+        public int isActivated { get; set; } 
+        public string activationLink { get; set; } 
+        public string companyName { get; set; } 
+        public string INN { get; set; } 
+        public string KPP { get; set; } 
+        public string OGRN { get; set; } 
+        public string OKVED { get; set; } 
+        public string juridicalAddress { get; set; } 
+        public string bank { get; set; } 
+        public string BIK { get; set; } 
+        public string corAccount { get; set; } 
+        public string payAccount { get; set; } 
+        public string post { get; set; } 
+        public string createdAt { get; set; } 
+        public string updatedAt { get; set; } 
+    }
 
 }
