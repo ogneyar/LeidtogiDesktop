@@ -48,13 +48,14 @@ namespace LeidtogiDesktop
         
         private async void ClickButtonToRequest(object sender, RoutedEventArgs e)
         {
+            
             string token;
             try {
-                WebRequest request = WebRequest.Create("https://api.leidtogi.site/api/user/login");
+                // MessageBox.Show("Начало...");
+                WebRequest request = WebRequest.Create("http://api.leidtogi.site/api/user/login");
                 // WebRequest request = WebRequest.Create("http://localhost:5000/api/user/login");
 
                 request.Method = "POST"; // для отправки используется метод Post
-
                 // request.Headers.Add("Host: api.leidtogi.site");
                 // request.Headers.Add("Origin: leidtogi.site");
                 // подключение cookies.
@@ -101,7 +102,7 @@ namespace LeidtogiDesktop
                 }
 
 
-                request = WebRequest.Create("https://api.leidtogi.site/api/user/info");
+                request = WebRequest.Create("http://api.leidtogi.site/api/user/info");
                 request.Headers.Add("Authorization: Bearer " + token);
                 using (WebResponse response = await request.GetResponseAsync())
                 {
@@ -120,7 +121,7 @@ namespace LeidtogiDesktop
                             User objectUser = JsonSerializer.Deserialize<User>(userJSON, options);
 
                             if (objectUser.role == null) MessageBox.Show("Нет такого параметра...");
-                            else MessageBox.Show(objectUser.role);
+                            else MessageBox.Show("Ваша роль: " + objectUser.role);
 
                         }
                     }
