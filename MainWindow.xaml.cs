@@ -28,24 +28,61 @@ namespace LeidtogiDesktop
         public MainWindow()
         {
             InitializeComponent();
+
+            this.SizeChanged += OnWindowSizeChanged;
+
             this.Background = new SolidColorBrush(Colors.Orange);
+
+            Header.Background = new SolidColorBrush(Colors.Gray);
 
             Button myButton = new Button();
             myButton.Width = 100;
             myButton.Height = 30;
-            myButton.Content = "Тест"; 
-            myButton.Background = new SolidColorBrush(Colors.Gray);
+            myButton.Content = "Тест";
+            myButton.Margin = new Thickness(0, 10, 10, 0);
+            myButton.Background = new SolidColorBrush(Colors.White);
+            myButton.Foreground = new SolidColorBrush(Colors.Red);
             myButton.Click += ClickButtonToRequest;
+            myButton.HorizontalAlignment = HorizontalAlignment.Right;
+            myButton.Cursor = Cursors.Hand;
 
-            stackPanelForAddButton.Children.Add(myButton);
+            Header.Children.Add(myButton);
 
             // Image myImage = new Image(); 
-            // myImage.Source = new BitmapImage(new Uri("src/img/favicon.ico", UriKind.Relative));
+            // myImage.Source = new BitmapImage(new Uri("src/img/logoLT.jpg", UriKind.Relative));
+            // myImage.Width = 1000;
+            // myImage.Height = 1000;
+            // Header.Children.Add(myImage);
 
-            // stackPanelForAddImage.Children.Add(myImage);
+            string filePath = "G:/vscode/leidtogidesktop/src/img/logo.bmp";
+            // string filePath = "https://api.leidtogi.site/milwaukee/4933471080/big/e13e52e0-dee0-4f7e-aa3c-ae0c5718090c.jpg";
+            Image myImage = new Image { Source = new BitmapImage(new Uri(filePath, UriKind.Relative)), Width = 35 };
+            Header.Children.Add(myImage);
+
+            Exit.Click += ExitClick;
+            
 
         }
+         private void ExitClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
         
+        protected void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double newWindowHeight = e.NewSize.Height;
+            double newWindowWidth = e.NewSize.Width;
+            double prevWindowHeight = e.PreviousSize.Height;
+            double prevWindowWidth = e.PreviousSize.Width;
+            // MessageBox.Show("Изменяется размер");
+            // Header.Width = newWindowWidth;
+
+            // MessageBox.Show("Body.Height: " + Body.Height);
+            if (prevWindowHeight > 0) Body.Height = Body.Height + (newWindowHeight - prevWindowHeight);
+
+            // Body.Height = newWindowHeight;
+        }
+
         private async void ClickButtonToRequest(object sender, RoutedEventArgs e)
         {
             
