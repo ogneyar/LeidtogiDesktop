@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LeidtogiDesktop"
 
-        Icon="https://api.leidtogi.site/favicon.ico"
+        Icon="src/img/favicon.ico"
         
         mc:Ignorable="d"
         Title="Leidtogi" 
@@ -46,7 +46,16 @@
             Grid.Column="0" 
             Grid.Row="0" 
             x:Name="Header" 
-            HorizontalAlignment="Stretch" />
+            HorizontalAlignment="Stretch" 
+        >
+            <Image 
+                Width="90" 
+                Source="src/img/logo.bmp"
+                HorizontalAlignment="Left" 
+                Margin="5"
+            />
+            <Button Background="AliceBlue" Width="100" Content="Меню" />
+        </StackPanel>
 
         <StackPanel 
             Grid.Column="0" 
@@ -56,10 +65,12 @@
             x:Name="Body" 
         >
             <Image 
-                Height="100" 
                 Width="100" 
-                Source="logo.bmp"
+                Source="src/img/logoLT.jpg"
             />
+            <Button Background="AliceBlue" Width="100">
+                ХЗ
+            </Button>
         </StackPanel>
 
         <StackPanel 

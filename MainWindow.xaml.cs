@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Reflection;
 
 
 namespace LeidtogiDesktop
@@ -30,6 +31,8 @@ namespace LeidtogiDesktop
             InitializeComponent();
 
             this.SizeChanged += OnWindowSizeChanged;
+            
+            Exit.Click += ExitClick;
 
             this.Background = new SolidColorBrush(Colors.Orange);
 
@@ -38,31 +41,44 @@ namespace LeidtogiDesktop
             Button myButton = new Button();
             myButton.Width = 100;
             myButton.Height = 30;
-            myButton.Content = "Тест";
-            myButton.Margin = new Thickness(0, 10, 10, 0);
+            myButton.Content = "Пуск";
+            myButton.Margin = new Thickness(0, 5, 5, 0);
             myButton.Background = new SolidColorBrush(Colors.White);
             myButton.Foreground = new SolidColorBrush(Colors.Red);
             myButton.Click += ClickButtonToRequest;
             myButton.HorizontalAlignment = HorizontalAlignment.Right;
             myButton.Cursor = Cursors.Hand;
+            // Добавление в футер кнопки 'Пуск'
+            Footer.Children.Add(myButton);
 
-            Header.Children.Add(myButton);
+            string filePath;
+            Image myImage;
+            filePath = System.AppDomain.CurrentDomain.BaseDirectory + "src\\img\\logo.bmp";
+            if (File.Exists(filePath)) {
+                myImage = new Image();
+                myImage.Source = new BitmapImage(new Uri(filePath));
+                myImage.Width = 90;
+                myImage.HorizontalAlignment = HorizontalAlignment.Right;
+                myImage.Margin = new Thickness(5);
+                // Добавление в тело картинки
+                Body.Children.Add(myImage);
+            }
 
-            // Image myImage = new Image(); 
-            // myImage.Source = new BitmapImage(new Uri("src/img/logoLT.jpg", UriKind.Relative));
-            // myImage.Width = 1000;
-            // myImage.Height = 1000;
-            // Header.Children.Add(myImage);
 
-            string filePath = "G:/vscode/leidtogidesktop/src/img/logo.bmp";
-            // string filePath = "https://api.leidtogi.site/milwaukee/4933471080/big/e13e52e0-dee0-4f7e-aa3c-ae0c5718090c.jpg";
-            Image myImage = new Image { Source = new BitmapImage(new Uri(filePath, UriKind.Relative)), Width = 35 };
-            Header.Children.Add(myImage);
-
-            Exit.Click += ExitClick;
-            
+            filePath = "http://api.leidtogi.site/milwaukee/4933471080/big/e13e52e0-dee0-4f7e-aa3c-ae0c5718090c.jpg";
+            myImage = new Image { 
+                Source = new BitmapImage(new Uri(filePath)), 
+                Width = 150 
+            };
+            // Добавление в тело картинки
+            Body.Children.Add(myImage);
+            // MessageBox.Show("lj,fdktyf");
 
         }
+
+        /// <summary>
+        /// Метод запускаемый по событию клика мыши по "Файл" -> "Выход"
+        /// </summary>
          private void ExitClick(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -70,17 +86,16 @@ namespace LeidtogiDesktop
         
         protected void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double newWindowHeight = e.NewSize.Height;
-            double newWindowWidth = e.NewSize.Width;
-            double prevWindowHeight = e.PreviousSize.Height;
+            // Было
             double prevWindowWidth = e.PreviousSize.Width;
-            // MessageBox.Show("Изменяется размер");
-            // Header.Width = newWindowWidth;
+            double prevWindowHeight = e.PreviousSize.Height;
+            // Стало
+            double newWindowWidth = e.NewSize.Width;
+            double newWindowHeight = e.NewSize.Height;
 
-            // MessageBox.Show("Body.Height: " + Body.Height);
             if (prevWindowHeight > 0) Body.Height = Body.Height + (newWindowHeight - prevWindowHeight);
 
-            // Body.Height = newWindowHeight;
+            // MessageBox.Show("Изменение размера. Было: " + prevWindowWidth.ToString() + "x" + prevWindowHeight.ToString() + ". Стало: " +  newWindowWidth.ToString() + "x" + newWindowHeight.ToString());
         }
 
         private async void ClickButtonToRequest(object sender, RoutedEventArgs e)
