@@ -37,6 +37,8 @@ namespace LeidtogiDesktop
 
             string url = Environment.GetEnvironmentVariable("URL_API");
 
+            GetProducts(url);
+
             this.SizeChanged += OnWindowSizeChanged;
             
             Exit.Click += ExitClick;
@@ -59,28 +61,25 @@ namespace LeidtogiDesktop
             // Добавление в футер кнопки 'Пуск'
             Footer.Children.Add(myButton);
 
-            string filePath;
-            Image myImage;
-            filePath = System.AppDomain.CurrentDomain.BaseDirectory + "src\\img\\logo.bmp";
-            if (File.Exists(filePath)) {
-                myImage = new Image();
-                myImage.Source = new BitmapImage(new Uri(filePath));
-                myImage.Width = 90;
-                myImage.HorizontalAlignment = HorizontalAlignment.Right;
-                myImage.Margin = new Thickness(5);
-                // Добавление в тело картинки
-                Body.Children.Add(myImage);
-            }
-
-
-            filePath = url + "milwaukee/4933471080/big/e13e52e0-dee0-4f7e-aa3c-ae0c5718090c.jpg";
-            myImage = new Image { 
-                Source = new BitmapImage(new Uri(filePath)), 
-                Width = 150 
-            };
-            // Добавление в тело картинки
-            Body.Children.Add(myImage);
-            // MessageBox.Show("lj,fdktyf");
+            // string filePath;
+            // Image myImage;
+            // filePath = System.AppDomain.CurrentDomain.BaseDirectory + "src\\img\\logo.bmp";
+            // if (File.Exists(filePath)) {
+            //     myImage = new Image();
+            //     myImage.Source = new BitmapImage(new Uri(filePath));
+            //     myImage.Width = 90;
+            //     myImage.HorizontalAlignment = HorizontalAlignment.Right;
+            //     myImage.Margin = new Thickness(5);
+            //     // Добавление в тело картинки
+            //     Body.Children.Add(myImage);
+            // }
+            // filePath = url + "milwaukee/4933471080/big/e13e52e0-dee0-4f7e-aa3c-ae0c5718090c.jpg";
+            // myImage = new Image { 
+            //     Source = new BitmapImage(new Uri(filePath)), 
+            //     Width = 150 
+            // };
+            // // Добавление в тело картинки
+            // Body.Children.Add(myImage);
 
         }
 
@@ -102,6 +101,58 @@ namespace LeidtogiDesktop
             }
         }
 
+        public async void GetProducts(string url, int limit = 9)
+        {
+            try {
+                if (limit > 9) limit = 9;
+                WebRequest request = WebRequest.Create(url + "api/product?limit=" + limit.ToString());
+                // request.Headers.Add("Authorization: Bearer " + token);
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string productJSON = reader.ReadToEnd();
+                            var options = new JsonSerializerOptions { IgnoreNullValues = true };
+                            // Product objectProduct = JsonSerializer.Deserialize<Product>(productJSON, options);
+                            ProductLimit objectProductLimit = JsonSerializer.Deserialize<ProductLimit>(productJSON, options);
+                            Product[] objectProducts = objectProductLimit.rows;
+                            int i = 1;
+                            foreach(Product objectProduct in objectProducts) {
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.name);
+
+                                string imgJSON = objectProduct.img;
+                                Img[] objectImg = JsonSerializer.Deserialize<Img[]>(imgJSON, options);
+                                string filePath = url + objectImg[0].big;
+                                Image myImage = new Image { 
+                                    Source = new BitmapImage(new Uri(filePath)), 
+                                    Width = 142,
+                                    Margin = new Thickness(10, 10, 10, 10)
+                                };
+                                // Добавление в тело картинки
+                                if (i == 1) Body1.Children.Add(myImage);
+                                if (i == 2) Body2.Children.Add(myImage);
+                                if (i == 3) Body3.Children.Add(myImage);
+                                if (i == 4) Body4.Children.Add(myImage);
+                                if (i == 5) Body5.Children.Add(myImage);
+                                if (i == 6) Body6.Children.Add(myImage);
+                                if (i == 7) Body7.Children.Add(myImage);
+                                if (i == 8) Body8.Children.Add(myImage);
+                                if (i == 9) Body9.Children.Add(myImage);
+
+                                i++;
+
+                            }
+
+                        }
+                    }
+                }
+            }catch {
+                MessageBox.Show("Исключение!");
+            }
+        }
+
         /// <summary>
         /// Метод запускаемый по событию клика мыши по "Файл" -> "Выход"
         /// </summary>
@@ -119,8 +170,7 @@ namespace LeidtogiDesktop
             double newWindowWidth = e.NewSize.Width;
             double newWindowHeight = e.NewSize.Height;
 
-            if (prevWindowHeight > 0) Body.Height = Body.Height + (newWindowHeight - prevWindowHeight);
-
+            // if (prevWindowHeight > 0) Body.Height = Body.Height + (newWindowHeight - prevWindowHeight);
             // MessageBox.Show("Изменение размера. Было: " + prevWindowWidth.ToString() + "x" + prevWindowHeight.ToString() + ". Стало: " +  newWindowWidth.ToString() + "x" + newWindowHeight.ToString());
         }
 
@@ -134,10 +184,7 @@ namespace LeidtogiDesktop
 
         private async void ClickButtonToRequest(object sender, RoutedEventArgs e)
         {
-            
             string token;
-            // string url = "http://api.leidtogi.site/";
-            // string url = "http://localhost:5000/";
             string url = Environment.GetEnvironmentVariable("URL_API");
             try {
                 // MessageBox.Show("Начало...");
@@ -161,70 +208,40 @@ namespace LeidtogiDesktop
                 request.ContentLength = byteArray.Length;
                         
                 // записываем данные в поток запроса
-                using (Stream dataStream = request.GetRequestStream())
-                {
+                using (Stream dataStream = request.GetRequestStream()) {
                     dataStream.Write(byteArray, 0, byteArray.Length);
                 }
                 // считываем данные из ответа сервера
-                using (WebResponse response = await request.GetResponseAsync())
-                {
-                    using (Stream stream = response.GetResponseStream())
-                    {
-                        using (StreamReader reader = new StreamReader(stream))
-                        {
+                using (WebResponse response = await request.GetResponseAsync()) {
+                    using (Stream stream = response.GetResponseStream()) {
+                        using (StreamReader reader = new StreamReader(stream)) {
                             string tokenJSON = reader.ReadToEnd();
-                            // MessageBox.Show(tokenJSON);
-
-                            // достаём сам токен из json
-                            // string searchText = "{\"token\":\"";
-                            // int indexOfChar = tokenJSON.IndexOf(searchText);
-                            // int start = indexOfChar + searchText.Length;
-                            // token = tokenJSON.Substring(start, tokenJSON.Length - start - 2);
-
                             Token objectToken = JsonSerializer.Deserialize<Token>(tokenJSON);
-
                             token = objectToken.token;
-
                             // MessageBox.Show(token);
-
                         }
                     }
                 }
-
 
                 request = WebRequest.Create(url + "api/user/info");
                 request.Headers.Add("Authorization: Bearer " + token);
-                using (WebResponse response = await request.GetResponseAsync())
-                {
-                    using (Stream stream = response.GetResponseStream())
-                    {
-                        using (StreamReader reader = new StreamReader(stream))
-                        {
+                using (WebResponse response = await request.GetResponseAsync()) {
+                    using (Stream stream = response.GetResponseStream()) {
+                        using (StreamReader reader = new StreamReader(stream)) {
                             string userJSON = reader.ReadToEnd();
                             // MessageBox.Show(userJSON);
-
-                            var options = new JsonSerializerOptions
-                            {
-                                IgnoreNullValues = true
-                            };
-                            
+                            var options = new JsonSerializerOptions { IgnoreNullValues = true };
                             User objectUser = JsonSerializer.Deserialize<User>(userJSON, options);
-
                             if (objectUser.role == null) MessageBox.Show("Нет такого параметра...");
                             else MessageBox.Show("Ваша роль: " + objectUser.role);
-
                         }
                     }
                 }
-
                 // MessageBox.Show("Запрос выполнен...");
-            
             }catch {
                 MessageBox.Show("Исключение!");
             }
         }
-
-       
     }
 
     public class Phone
@@ -266,6 +283,58 @@ namespace LeidtogiDesktop
         public string post { get; set; } 
         public string createdAt { get; set; } 
         public string updatedAt { get; set; } 
+    }
+
+
+    class Product { 
+        public int id { get; set; } 
+        public string name { get; set; } 
+        public string url { get; set; } 
+        public int price { get; set; } 
+        public float rating { get; set; } 
+        public string img { get; set; } 
+        public int have { get; set; } 
+        public string article { get; set; } 
+        public string promo { get; set; } 
+        public string country { get; set; } 
+        public string createdAt { get; set; } //  date
+        public string updatedAt { get; set; } //  date
+        public int categoryId { get; set; } 
+        public int brandId { get; set; } 
+        public Info[] info { get; set; } 
+        public Size[] size { get; set; } 
+    }
+
+    class Info { 
+        public int id { get; set; } 
+        public string title { get; set; } 
+        public string body { get; set; } 
+        public string createdAt { get; set; } //  date
+        public string updatedAt { get; set; } //  date
+        public int productId { get; set; }
+
+    }
+    class Size { 
+        public int id { get; set; } 
+        public float weight { get; set; } 
+        public float volume { get; set; } 
+        public float width { get; set; } 
+        public float height { get; set; } 
+        public float length { get; set; } 
+        public string createdAt { get; set; } //  date
+        public string updatedAt { get; set; } //  date
+        public int productId { get; set; }
+
+    }
+
+    class Img {
+        public string big { get; set; }
+        public string small { get; set; }
+    }
+
+    class ProductLimit {
+        public int count { get; set; }
+        public Product[] rows { get; set; }
     }
 
 }

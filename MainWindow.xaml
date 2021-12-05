@@ -27,64 +27,95 @@
         <MenuItem Header="Изменить" Cursor="Hand"></MenuItem>
         <MenuItem Header="Просмотр" Cursor="Hand"></MenuItem>
     </Menu>
-        
+
+    <StackPanel 
+        Height="50" 
+        x:Name="Header" 
+        HorizontalAlignment="Stretch" 
+    >
+        <Image 
+            Width="90" 
+            Source="src/img/logo.bmp"
+            HorizontalAlignment="Left" 
+            Margin="5"
+        />
+        <Button Background="AliceBlue" Width="100" Content="Меню" />
+    </StackPanel>
+
     <Grid 
     >
         <!-- ShowGridLines="True" -->
-
+        
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <StackPanel 
-            Height="50" 
-            Grid.Column="0" 
-            Grid.Row="0" 
-            x:Name="Header" 
-            HorizontalAlignment="Stretch" 
-        >
-            <Image 
-                Width="90" 
-                Source="src/img/logo.bmp"
-                HorizontalAlignment="Left" 
-                Margin="5"
-            />
-            <Button Background="AliceBlue" Width="100" Content="Меню" />
-        </StackPanel>
-
-        <StackPanel 
-            Grid.Column="0" 
+            Grid.Column="1" 
             Grid.Row="1" 
             Background="Green" 
-            Height="337" 
-            x:Name="Body" 
+            
+            x:Name="Body5" 
         >
-            <Image 
+        <!-- Height="337"  -->
+
+            <!-- <Image 
                 Width="100" 
                 Source="src/img/logoLT.jpg"
             />
             <Button Background="AliceBlue" Width="100">
                 ХЗ
-            </Button>
+            </Button> -->
         </StackPanel>
 
         <StackPanel 
-            Height="40" 
+            Grid.Column="0" 
+            Grid.Row="0" 
+            x:Name="Body1" 
+        />
+        <StackPanel 
+            Grid.Column="1" 
+            Grid.Row="0" 
+            x:Name="Body2" 
+        />
+        <StackPanel 
+            Grid.Column="2" 
+            Grid.Row="0" 
+            x:Name="Body3" 
+        />
+        <StackPanel 
+            Grid.Column="0" 
+            Grid.Row="1" 
+            x:Name="Body4" 
+        />
+        <StackPanel 
+            Grid.Column="2" 
+            Grid.Row="1" 
+            x:Name="Body6" 
+        />
+        <StackPanel 
             Grid.Column="0" 
             Grid.Row="2" 
-            x:Name="Footer" 
-            Orientation="Vertical" 
-            HorizontalAlignment="Stretch" 
-            Background="Blue" 
-            Margin="0 5 0 5" />
-
-
-
+            x:Name="Body7" 
+        />
+        <StackPanel 
+            Grid.Column="1" 
+            Grid.Row="2" 
+            x:Name="Body8" 
+        />
+        <StackPanel 
+            Grid.Column="2" 
+            Grid.Row="2" 
+            x:Name="Body9" 
+        />
+        
         <!-- <Canvas Background="Orange">
             <Button Background="AliceBlue" Content="Top 20 Left 40" Canvas.Top="20" Canvas.Left="40" />
             <Button x:Name="phoneButton" Width="180" Height="40" Margin="5" Canvas.Top="205" Canvas.Left="210">
@@ -94,8 +125,19 @@
             </Button>
         </Canvas> -->
 
-
     </Grid>
+
+    <StackPanel 
+        Height="40" 
+        
+        x:Name="Footer" 
+        Orientation="Vertical" 
+        HorizontalAlignment="Stretch" 
+        Background="Blue" 
+        Margin="0 5 0 5" />
+
+        <!-- Grid.Column="0"  -->
+        <!-- Grid.Row="2"  -->
 
 </StackPanel>
 
