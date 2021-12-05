@@ -35,6 +35,8 @@ namespace LeidtogiDesktop
             var dotenv = System.IO.Path.Combine(root, ".env");
             LoadEnv(dotenv);
 
+            string url = Environment.GetEnvironmentVariable("URL_API");
+
             this.SizeChanged += OnWindowSizeChanged;
             
             Exit.Click += ExitClick;
@@ -71,7 +73,7 @@ namespace LeidtogiDesktop
             }
 
 
-            filePath = "http://api.leidtogi.site/milwaukee/4933471080/big/e13e52e0-dee0-4f7e-aa3c-ae0c5718090c.jpg";
+            filePath = url + "milwaukee/4933471080/big/e13e52e0-dee0-4f7e-aa3c-ae0c5718090c.jpg";
             myImage = new Image { 
                 Source = new BitmapImage(new Uri(filePath)), 
                 Width = 150 
