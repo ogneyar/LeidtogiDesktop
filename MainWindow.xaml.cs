@@ -19,6 +19,7 @@ using System.Windows.Shapes;
 using System.Reflection;
 
 
+
 namespace LeidtogiDesktop
 {
     /// <summary>
@@ -29,6 +30,10 @@ namespace LeidtogiDesktop
         public MainWindow()
         {
             InitializeComponent();
+
+            var root = Directory.GetCurrentDirectory();
+            var dotenv = System.IO.Path.Combine(root, ".env");
+            LoadEnv(dotenv);
 
             this.SizeChanged += OnWindowSizeChanged;
             
@@ -45,9 +50,10 @@ namespace LeidtogiDesktop
             myButton.Margin = new Thickness(0, 5, 5, 0);
             myButton.Background = new SolidColorBrush(Colors.White);
             myButton.Foreground = new SolidColorBrush(Colors.Red);
-            myButton.Click += ClickButtonToRequest;
             myButton.HorizontalAlignment = HorizontalAlignment.Right;
             myButton.Cursor = Cursors.Hand;
+            myButton.Click += ClickButtonToRequest;
+            // myButton.Click += ClickButtonToTest;
             // Добавление в футер кнопки 'Пуск'
             Footer.Children.Add(myButton);
 
@@ -76,10 +82,28 @@ namespace LeidtogiDesktop
 
         }
 
+        public static void LoadEnv(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return;
+
+            foreach (var line in File.ReadAllLines(filePath))
+            {
+                var parts = line.Split(
+                    '=',
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length != 2)
+                    continue;
+
+                Environment.SetEnvironmentVariable(parts[0], parts[1]);
+            }
+        }
+
         /// <summary>
         /// Метод запускаемый по событию клика мыши по "Файл" -> "Выход"
         /// </summary>
-         private void ExitClick(object sender, RoutedEventArgs e)
+        private void ExitClick(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
@@ -98,14 +122,24 @@ namespace LeidtogiDesktop
             // MessageBox.Show("Изменение размера. Было: " + prevWindowWidth.ToString() + "x" + prevWindowHeight.ToString() + ". Стало: " +  newWindowWidth.ToString() + "x" + newWindowHeight.ToString());
         }
 
+        private void ClickButtonToTest(object sender, RoutedEventArgs e)
+        {            
+            if (sender.GetType() == typeof(Button))
+                MessageBox.Show((sender as Button).Content.ToString());
+            
+            MessageBox.Show(Environment.GetEnvironmentVariable("TEST").ToString());
+        }
+
         private async void ClickButtonToRequest(object sender, RoutedEventArgs e)
         {
             
             string token;
+            // string url = "http://api.leidtogi.site/";
+            // string url = "http://localhost:5000/";
+            string url = Environment.GetEnvironmentVariable("URL_API");
             try {
                 // MessageBox.Show("Начало...");
-                WebRequest request = WebRequest.Create("http://api.leidtogi.site/api/user/login");
-                // WebRequest request = WebRequest.Create("http://localhost:5000/api/user/login");
+                WebRequest request = WebRequest.Create(url + "api/user/login");
 
                 request.Method = "POST"; // для отправки используется метод Post
                 // request.Headers.Add("Host: api.leidtogi.site");
@@ -114,7 +148,9 @@ namespace LeidtogiDesktop
                 // request.Credentials = CredentialCache.DefaultCredentials;
                 
                 // данные для отправки
-                string data = "{\"email\":\"ya13th@mail.ru\",\"password\":\"1111\"}";
+                string email = Environment.GetEnvironmentVariable("EMAIL");
+                string password = Environment.GetEnvironmentVariable("PASSWORD");
+                string data = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
                 // преобразуем данные в массив байтов
                 byte[] byteArray = Encoding.UTF8.GetBytes(data);
                 // устанавливаем тип содержимого - параметр ContentType
@@ -154,7 +190,7 @@ namespace LeidtogiDesktop
                 }
 
 
-                request = WebRequest.Create("http://api.leidtogi.site/api/user/info");
+                request = WebRequest.Create(url + "api/user/info");
                 request.Headers.Add("Authorization: Bearer " + token);
                 using (WebResponse response = await request.GetResponseAsync())
                 {
@@ -180,7 +216,6 @@ namespace LeidtogiDesktop
                 }
 
                 // MessageBox.Show("Запрос выполнен...");
-
             
             }catch {
                 MessageBox.Show("Исключение!");
