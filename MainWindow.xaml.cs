@@ -35,9 +35,11 @@ namespace LeidtogiDesktop
             var dotenv = System.IO.Path.Combine(root, ".env");
             LoadEnv(dotenv);
 
-            string url = Environment.GetEnvironmentVariable("URL_API");
+            string url = Environment.GetEnvironmentVariable("URL_API_TEST");
+            // string url = Environment.GetEnvironmentVariable("URL_API");
 
-            GetProducts(url);
+            // GetProducts(url);
+            GetProducts("http://localhost:5000/");
 
             this.SizeChanged += OnWindowSizeChanged;
             
@@ -56,8 +58,8 @@ namespace LeidtogiDesktop
             myButton.Foreground = new SolidColorBrush(Colors.Red);
             myButton.HorizontalAlignment = HorizontalAlignment.Right;
             myButton.Cursor = Cursors.Hand;
-            myButton.Click += ClickButtonToRequest;
-            // myButton.Click += ClickButtonToTest;
+            // myButton.Click += ClickButtonToRequest;
+            myButton.Click += ClickButtonToTest;
             // Добавление в футер кнопки 'Пуск'
             Footer.Children.Add(myButton);
 
@@ -104,6 +106,7 @@ namespace LeidtogiDesktop
         public async void GetProducts(string url, int limit = 9)
         {
             try {
+                MessageBox.Show(url);
                 if (limit > 9) limit = 9;
                 WebRequest request = WebRequest.Create(url + "api/product?limit=" + limit.ToString());
                 // request.Headers.Add("Authorization: Bearer " + token);
@@ -117,10 +120,24 @@ namespace LeidtogiDesktop
                             var options = new JsonSerializerOptions { IgnoreNullValues = true };
                             // Product objectProduct = JsonSerializer.Deserialize<Product>(productJSON, options);
                             ProductLimit objectProductLimit = JsonSerializer.Deserialize<ProductLimit>(productJSON, options);
+                            // MessageBox.Show(objectProductLimit.count.ToString());
                             Product[] objectProducts = objectProductLimit.rows;
                             int i = 1;
                             foreach(Product objectProduct in objectProducts) {
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.id.ToString());
                                 // if (objectProduct.id == 70) MessageBox.Show(objectProduct.name);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.url);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.price);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.rating.ToString());
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.img);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.have.ToString());
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.article);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.promo);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.country);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.createdAt);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.updatedAt);
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.categoryId.ToString());
+                                // if (objectProduct.id == 70) MessageBox.Show(objectProduct.brandId.ToString());
 
                                 string imgJSON = objectProduct.img;
                                 Img[] objectImg = JsonSerializer.Deserialize<Img[]>(imgJSON, options);
@@ -149,7 +166,7 @@ namespace LeidtogiDesktop
                     }
                 }
             }catch {
-                MessageBox.Show("Исключение!");
+                MessageBox.Show("Исключение в GetProducts!");
             }
         }
 
@@ -185,7 +202,8 @@ namespace LeidtogiDesktop
         private async void ClickButtonToRequest(object sender, RoutedEventArgs e)
         {
             string token;
-            string url = Environment.GetEnvironmentVariable("URL_API");
+            string url = Environment.GetEnvironmentVariable("URL_API_TEST");
+            // string url = Environment.GetEnvironmentVariable("URL_API");
             try {
                 // MessageBox.Show("Начало...");
                 WebRequest request = WebRequest.Create(url + "api/user/login");
@@ -239,7 +257,7 @@ namespace LeidtogiDesktop
                 }
                 // MessageBox.Show("Запрос выполнен...");
             }catch {
-                MessageBox.Show("Исключение!");
+                MessageBox.Show("Исключение в ClickButtonToRequest!");
             }
         }
     }
@@ -255,10 +273,10 @@ namespace LeidtogiDesktop
         }
     }
 
-    class Token { public string token { get; set; } }
+    public class Token { public string token { get; set; } }
 
 
-    class User { 
+    public class User { 
         public int id { get; set; } 
         public string surname { get; set; } 
         public string name { get; set; } 
@@ -286,11 +304,11 @@ namespace LeidtogiDesktop
     }
 
 
-    class Product { 
+    public class Product { 
         public int id { get; set; } 
         public string name { get; set; } 
         public string url { get; set; } 
-        public int price { get; set; } 
+        public string price { get; set; } 
         public float rating { get; set; } 
         public string img { get; set; } 
         public int have { get; set; } 
@@ -305,7 +323,7 @@ namespace LeidtogiDesktop
         public Size[] size { get; set; } 
     }
 
-    class Info { 
+    public class Info { 
         public int id { get; set; } 
         public string title { get; set; } 
         public string body { get; set; } 
@@ -314,7 +332,7 @@ namespace LeidtogiDesktop
         public int productId { get; set; }
 
     }
-    class Size { 
+    public class Size { 
         public int id { get; set; } 
         public float weight { get; set; } 
         public float volume { get; set; } 
@@ -327,14 +345,14 @@ namespace LeidtogiDesktop
 
     }
 
-    class Img {
+    public class Img {
         public string big { get; set; }
         public string small { get; set; }
     }
 
-    class ProductLimit {
+    public class ProductLimit {
         public int count { get; set; }
-        public Product[] rows { get; set; }
+        public Product[] rows { get; set; } 
     }
 
 }
